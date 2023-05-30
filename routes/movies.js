@@ -5,7 +5,7 @@ const { URL_REG } = require('../utils/constants');
 
 const {
   createMovie,
-  receiveMovies,
+  getMovies,
   deleteMovie,
 } = require('../controllers/movies');
 
@@ -25,7 +25,7 @@ router.post('/', celebrate({
   }),
 }), createMovie);
 
-router.get('/', receiveMovies);
+router.get('/', getMovies);
 
 router.delete('/:id', celebrate({
   params: Joi.object().keys({
