@@ -1,16 +1,26 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
+const cors = require('cors');
+const { errors } = require('celebrate');
 
-mongoose.set('strictQuery', true);
-mongoose.connect('mongodb://localhost:27017/bitfilmsdb')
-  .then(() => {
-    console.log('Соединение с MongoDB установлено');
-  })
-  .catch((err) => console.log(`Ошибка при соединении с MongoDB: ${err}`));
+const router = require('./routes/index');
+
+const { PORT = 3000 } = process.env;
 
 const app = express();
 
-const { PORT = 3000 } = process.env;
+app.use(cors());
+app.use(helmet());
+
+mongoose.set('strictQuery', true);
+mongoose.connect('mongodb://localhost:27017/bitfilmsdb');
+
+app.use(express.json());
+
+app.use(router);
+
+app.use(errors());
 
 app.listen(PORT, (err) => {
   return err
