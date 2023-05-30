@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const { EMAIL_REG } = require('../utils/constants');
+
 const { Schema } = mongoose;
 
 const userSchema = new Schema(
@@ -9,7 +11,7 @@ const userSchema = new Schema(
       required: true,
       unique: true,
       validate: {
-        validator: (email) => /.+@.+\..+/.test(email),
+        validator: (email) => EMAIL_REG.test(email),
         message: 'Некорректный email',
       },
     },
