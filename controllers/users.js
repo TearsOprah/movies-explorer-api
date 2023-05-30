@@ -9,6 +9,7 @@ const UnauthorizedError = require('../errors/UnauthorizedError');
 const NotFoundError = require('../errors/NotFoundError');
 const ConflictError = require('../errors/ConflictError');
 const InaccurateDataError = require('../errors/InaccurateDataError');
+const { successMessages, errorMessages, STATUS_CREATED } = require('../utils/constants');
 
 function getCurrentUserInfo(req, res, next) {
   const { _id } = req.user;
@@ -19,11 +20,11 @@ function getCurrentUserInfo(req, res, next) {
       if (user) {
         return res.send(user);
       }
-      throw new NotFoundError('Пользователь с таким id не найден');
+      throw new NotFoundError(errorMessages.userNotFound);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new InaccurateDataError('Некорректный id пользователя'));
+        next(new InaccurateDataError(errorMessages.invalidId));
       } else {
         next(err);
       }
@@ -50,15 +51,15 @@ function setCurrentUserInfo(req, res, next) {
       if (user) {
         return res.send(user);
       }
-      throw new NotFoundError('Пользователь с таким id не найден');
+      throw new NotFoundError(errorMessages.userNotFound);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return next(new InaccurateDataError('Некорректный id пользователя'));
+        return next(new InaccurateDataError(errorMessages.invalidId));
       }
 
       if (err.name === 'ValidationError') {
-        return next(new InaccurateDataError('Переданы некорректные данные при обновлении данных профиля пользователя'));
+        return next(new InaccurateDataError(errorMessages.updateFailed));
       }
 
       return next(err);
@@ -85,7 +86,7 @@ function loginUser(req, res, next) {
         return res.send({ token });
       }
 
-      throw new UnauthorizedError('Неправильные почта или пароль');
+      throw new UnauthorizedError(errorMessages.invalidCredentials);
     })
     .catch(next);
 }
@@ -104,12 +105,12 @@ function registerUser(req, res, next) {
       password: hash,
       name,
     }))
-    .then(() => res.status(201).send({ message: 'Пользователь успешно зарегистрирован на сайте' }))
+    .then(() => res.status(STATUS_CREATED).send({ message: successMessages.userRegistered }))
     .catch((err) => {
       if (err.code === 11000) {
-        next(new ConflictError('Пользователь с таким электронным адресом уже зарегистрирован'));
+        next(new ConflictError(errorMessages.duplicateEmail));
       } else if (err.name === 'ValidationError') {
-        next(new InaccurateDataError('Переданы некорректные данные при регистрации пользователя'));
+        next(new InaccurateDataError(errorMessages.inaccurateData));
       } else {
         next(err);
       }

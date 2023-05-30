@@ -2,12 +2,15 @@ const jwt = require('jsonwebtoken');
 
 const { nodeEnv, secretKey } = require('../config');
 
+const UnauthorizedError = require('../errors/UnauthorizedError');
+const { errorMessages } = require('../utils/constants');
+
 function authorizeUser(req, _, next) {
   const { authorization } = req.headers;
   const bearer = 'Bearer ';
 
   if (!authorization || !authorization.startsWith(bearer)) {
-    return next(new Error('Неправильные почта или пароль'));
+    return next(new UnauthorizedError(errorMessages.invalidCredentials));
   }
 
   const token = authorization.replace(bearer, '');
@@ -16,7 +19,7 @@ function authorizeUser(req, _, next) {
   try {
     payload = jwt.verify(token, nodeEnv === 'production' ? secretKey : 'dev-secret-key');
   } catch (err) {
-    return next(new Error('Неправильные почта или пароль'));
+    return next(new UnauthorizedError(errorMessages.invalidCredentials));
   }
 
   req.user = payload;

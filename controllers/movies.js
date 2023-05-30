@@ -3,6 +3,7 @@ const Movie = require('../models/movie');
 const InaccurateDataError = require('../errors/InaccurateDataError');
 const ForbiddenError = require('../errors/ForbiddenError');
 const NotFoundError = require('../errors/NotFoundError');
+const { successMessages, errorMessages, STATUS_CREATED } = require('../utils/constants');
 
 function createMovie(req, res, next) {
   const {
@@ -36,10 +37,10 @@ function createMovie(req, res, next) {
       nameRU,
       nameEN,
     })
-    .then(() => res.status(201).send({ message: 'Фильм успешно сохранен в личном кабинете' }))
+    .then(() => res.status(STATUS_CREATED).send({ message: successMessages.movieCreated }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new InaccurateDataError('Переданы некорректные данные при сохранении фильма в личном кабинете'));
+        next(new InaccurateDataError(errorMessages.inaccurateData));
       } else {
         next(err);
       }
@@ -56,11 +57,11 @@ function getMovies(req, res, next) {
       if (movies.length > 0) {
         return res.send(movies);
       }
-      throw new NotFoundError('Фильмы пользователя с указанным id не найдены');
+      throw new NotFoundError(errorMessages.movieNotFound);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new InaccurateDataError('Некорректный id пользователя'));
+        next(new InaccurateDataError(errorMessages.userNotFound));
       } else {
         next(err);
       }
@@ -75,17 +76,17 @@ function deleteMovie(req, res, next) {
     .findById(movieId)
     .then((movie) => {
       if (!movie) {
-        throw new NotFoundError('Данные фильма не найдены по указанному id');
+        throw new NotFoundError(errorMessages.movieNotFound);
       }
 
       const { owner: movieOwnerId } = movie;
       if (movieOwnerId.valueOf() !== userId) {
-        throw new ForbiddenError('Нет прав доступа для удаления фильма из личного кабинета другого пользователя');
+        throw new ForbiddenError(errorMessages.accessDenied);
       }
 
       movie
         .deleteOne()
-        .then(() => res.send({ message: 'Фильм успешно удален из личного кабинета пользователя' }))
+        .then(() => res.send({ message: successMessages.movieDeleted }))
         .catch(next);
     })
     .catch(next);
