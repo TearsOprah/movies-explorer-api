@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 
-const { EMAIL_REG } = require('../utils/constants')
+const { EMAIL_REG } = require('../utils/constants');
 
 const { getCurrentUserInfo, setCurrentUserInfo } = require('../controllers/users');
 

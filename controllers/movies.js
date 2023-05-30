@@ -55,9 +55,8 @@ function getMovies(req, res, next) {
     .then((movies) => {
       if (movies.length > 0) {
         return res.send(movies);
-      } else {
-        throw new NotFoundError('Фильмы пользователя с указанным id не найдены');
       }
+      throw new NotFoundError('Фильмы пользователя с указанным id не найдены');
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -91,7 +90,6 @@ function deleteMovie(req, res, next) {
     })
     .catch(next);
 }
-
 
 module.exports = {
   createMovie,

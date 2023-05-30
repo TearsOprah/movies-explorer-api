@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
 
-const { NODE_ENV, SECRET_KEY, PASSWORD_REG } = require('../utils/constants')
+const { NODE_ENV, SECRET_KEY, PASSWORD_REG } = require('../utils/constants');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 const NotFoundError = require('../errors/NotFoundError');
 const ConflictError = require('../errors/ConflictError');
@@ -17,9 +17,8 @@ function getCurrentUserInfo(req, res, next) {
     .then((user) => {
       if (user) {
         return res.send(user);
-      } else {
-        throw new NotFoundError('Пользователь с таким id не найден');
       }
+      throw new NotFoundError('Пользователь с таким id не найден');
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -49,9 +48,8 @@ function setCurrentUserInfo(req, res, next) {
     .then((user) => {
       if (user) {
         return res.send(user);
-      } else {
-        throw new NotFoundError('Пользователь с таким id не найден');
       }
+      throw new NotFoundError('Пользователь с таким id не найден');
     })
     .catch((err) => {
       if (err.name === 'CastError') {
