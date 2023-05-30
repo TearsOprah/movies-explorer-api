@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const { NODE_ENV, SECRET_KEY } = require('../utils/constants');
+const { nodeEnv, secretKey } = require('../config');
 
 function authorizeUser(req, _, next) {
   const { authorization } = req.headers;
@@ -14,7 +14,7 @@ function authorizeUser(req, _, next) {
   let payload;
 
   try {
-    payload = jwt.verify(token, NODE_ENV === 'production' ? SECRET_KEY : 'dev-secret-key');
+    payload = jwt.verify(token, nodeEnv === 'production' ? secretKey : 'dev-secret-key');
   } catch (err) {
     return next(new Error('Неправильные почта или пароль'));
   }

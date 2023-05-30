@@ -3,7 +3,8 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
 
-const { NODE_ENV, SECRET_KEY, PASSWORD_REG } = require('../utils/constants');
+const { PASSWORD_REG } = require('../utils/constants');
+const { nodeEnv, secretKey } = require('../config');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 const NotFoundError = require('../errors/NotFoundError');
 const ConflictError = require('../errors/ConflictError');
@@ -77,7 +78,7 @@ function loginUser(req, res, next) {
       if (_id) {
         const token = jwt.sign(
           { _id },
-          NODE_ENV === 'production' ? SECRET_KEY : 'dev-secret-key',
+          nodeEnv === 'production' ? secretKey : 'dev-secret-key',
           { expiresIn: '7d' },
         );
 

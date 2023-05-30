@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
@@ -8,7 +9,7 @@ const router = require('./routes/index');
 const errorHandler = require('./middlewares/errorHandler');
 const rateLimiter = require('./middlewares/rateLimiter')
 
-const { PORT = 3000 } = process.env;
+const { port, mongoAddress } = require('./config');
 
 const app = express();
 
@@ -18,7 +19,7 @@ app.use(helmet());
 
 // подключение к базе данных
 mongoose.set('strictQuery', true);
-mongoose.connect('mongodb://127.0.0.1:27017/bitfilmsdb', {
+mongoose.connect(mongoAddress, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
@@ -42,6 +43,6 @@ app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Сервер запущен на порту ${PORT}`);
+app.listen(port, () => {
+  console.log(`Сервер запущен на порту ${port}`);
 });
