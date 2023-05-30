@@ -1,6 +1,7 @@
 const router = require('express').Router();
 
 const NotFoundError = require('../errors/NotFoundError');
+const { errorMessages } = require('../utils/constants');
 
 const routeSignup = require('./signup');
 const routeSignin = require('./signin');
@@ -18,6 +19,6 @@ router.use(auth);
 router.use('/users', routeUsers);
 router.use('/movies', routeMovies);
 
-router.use((req, res, next) => next(new NotFoundError('Страницы по запрошенному URL не существует')));
+router.use((req, res, next) => next(new NotFoundError(errorMessages.pageNotFound)));
 
 module.exports = router;

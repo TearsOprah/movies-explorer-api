@@ -21,6 +21,7 @@ const errorMessages = {
   updateFailed: 'Переданы некорректные данные при обновлении данных профиля пользователя',
   duplicateEmail: 'Пользователь с таким электронным адресом уже зарегистрирован',
   invalidCredentials: 'Неправильные почта или пароль',
+  pageNotFound: 'Страница не найдена',
 };
 
 module.exports = {
