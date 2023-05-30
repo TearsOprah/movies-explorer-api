@@ -7,7 +7,7 @@ const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const router = require('./routes/index');
 const errorHandler = require('./middlewares/errorHandler');
-const rateLimiter = require('./middlewares/rateLimiter')
+const rateLimiter = require('./middlewares/rateLimiter');
 
 const { port, mongoAddress } = require('./config');
 
