@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
-
-const { EMAIL_REG } = require('../utils/constants');
+const bcrypt = require('bcryptjs');
 
 const { Schema } = mongoose;
+
+const { EMAIL_REG } = require('../utils/constants');
 
 const userSchema = new Schema(
   {
@@ -12,7 +13,7 @@ const userSchema = new Schema(
       unique: true,
       validate: {
         validator: (email) => EMAIL_REG.test(email),
-        message: 'Некорректный email',
+        message: 'Требуется ввести email',
       },
     },
 
@@ -29,6 +30,30 @@ const userSchema = new Schema(
       maxlength: 30,
     },
   },
+
+  {
+    statics: {
+      findUserByCredentials(email, password) {
+        return (
+          this
+            .findOne({ email })
+            .select('+password')
+        )
+          .then((user) => {
+            if (user) {
+              return bcrypt.compare(password, user.password)
+                .then((matched) => {
+                  if (matched) return user;
+
+                  return Promise.reject();
+                });
+            }
+
+            return Promise.reject();
+          });
+      },
+    },
+  },
 );
 
-  module.exports = mongoose.model('user', userSchema);
+module.exports = mongoose.model('user', userSchema);
