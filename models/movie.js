@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const { ObjectId } = mongoose.Schema.Types;
 
-const { URL_REG } = require('../utils/constants');
+const { URL_REG } = require('../utils/validation');
 
 const movieSchema = new Schema(
   {

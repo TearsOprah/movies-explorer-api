@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 
 const { Schema } = mongoose;
 
-const { EMAIL_REG } = require('../utils/constants');
+const { EMAIL_REG } = require('../utils/validation');
 
 const userSchema = new Schema(
   {

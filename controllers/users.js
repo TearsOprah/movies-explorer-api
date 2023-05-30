@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
 
-const { PASSWORD_REG } = require('../utils/constants');
+const { PASSWORD_REG } = require('../utils/validation');
 const { nodeEnv, secretKey } = require('../config');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 const NotFoundError = require('../errors/NotFoundError');
