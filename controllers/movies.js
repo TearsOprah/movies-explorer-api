@@ -1,5 +1,9 @@
 const Movie = require('../models/movie');
 
+const InaccurateDataError = require('../errors/InaccurateDataError');
+const ForbiddenError = require('../errors/ForbiddenError');
+const NotFoundError = require('../errors/NotFoundError');
+
 function createMovie(req, res, next) {
   const {
     country,
@@ -35,7 +39,7 @@ function createMovie(req, res, next) {
     .then(() => res.status(201).send({ message: 'Фильм успешно сохранен в личном кабинете' }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new Error('Переданы некорректные данные при сохранении фильма в личном кабинете'));
+        next(new InaccurateDataError('Переданы некорректные данные при сохранении фильма в личном кабинете'));
       } else {
         next(err);
       }
@@ -52,12 +56,12 @@ function getMovies(req, res, next) {
       if (movies.length > 0) {
         return res.send(movies);
       } else {
-        throw new Error('Фильмы пользователя с указанным id не найдены');
+        throw new NotFoundError('Фильмы пользователя с указанным id не найдены');
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new Error('Некорректный id пользователя'));
+        next(new InaccurateDataError('Некорректный id пользователя'));
       } else {
         next(err);
       }
@@ -72,12 +76,12 @@ function deleteMovie(req, res, next) {
     .findById(movieId)
     .then((movie) => {
       if (!movie) {
-        throw new Error('Данные фильма не найдены по указанному id');
+        throw new NotFoundError('Данные фильма не найдены по указанному id');
       }
 
       const { owner: movieOwnerId } = movie;
       if (movieOwnerId.valueOf() !== userId) {
-        throw new Error('Нет прав доступа для удаления фильма из личного кабинета другого пользователя');
+        throw new ForbiddenError('Нет прав доступа для удаления фильма из личного кабинета другого пользователя');
       }
 
       movie
