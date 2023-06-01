@@ -4,6 +4,9 @@ const bcrypt = require('bcryptjs');
 const { Schema } = mongoose;
 
 const { EMAIL_REG } = require('../utils/validation');
+const UnauthorizedError = require('../errors/UnauthorizedError');
+const { errorMessages } = require('../utils/constants');
+
 
 const userSchema = new Schema(
   {
@@ -45,11 +48,11 @@ const userSchema = new Schema(
                 .then((matched) => {
                   if (matched) return user;
 
-                  return Promise.reject();
+                  throw new UnauthorizedError(errorMessages.invalidCredentials);
                 });
             }
 
-            return Promise.reject();
+            throw new UnauthorizedError(errorMessages.invalidCredentials);
           });
       },
     },
