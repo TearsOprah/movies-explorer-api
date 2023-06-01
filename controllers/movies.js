@@ -53,12 +53,7 @@ function getMovies(req, res, next) {
   Movie
     .find({ owner: _id })
     .populate('owner', '_id')
-    .then((movies) => {
-      if (movies.length > 0) {
-        return res.send(movies);
-      }
-      throw new NotFoundError(errorMessages.movieNotFound);
-    })
+    .then((movies) => res.send(movies))
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new InaccurateDataError(errorMessages.userNotFound));
