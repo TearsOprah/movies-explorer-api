@@ -54,9 +54,9 @@ function setCurrentUserInfo(req, res, next) {
       throw new NotFoundError(errorMessages.userNotFound);
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        return next(new InaccurateDataError(errorMessages.invalidId));
-      }
+      // if (err.name === 'CastError') {
+      //   return next(new InaccurateDataError(errorMessages.invalidId));
+      // }
 
       if (err.name === 'ValidationError') {
         return next(new InaccurateDataError(errorMessages.updateFailed));
