@@ -7,7 +7,6 @@ const { EMAIL_REG } = require('../utils/validation');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 const { errorMessages } = require('../utils/constants');
 
-
 const userSchema = new Schema(
   {
     email: {

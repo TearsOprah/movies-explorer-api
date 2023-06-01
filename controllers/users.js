@@ -5,7 +5,6 @@ const User = require('../models/user');
 
 const { PASSWORD_REG } = require('../utils/validation');
 const { nodeEnv, secretKey } = require('../config');
-const UnauthorizedError = require('../errors/UnauthorizedError');
 const NotFoundError = require('../errors/NotFoundError');
 const ConflictError = require('../errors/ConflictError');
 const InaccurateDataError = require('../errors/InaccurateDataError');
@@ -70,23 +69,19 @@ function loginUser(req, res, next) {
   const { email, password } = req.body;
 
   if (!PASSWORD_REG.test(password)) {
-    throw new InaccurateDataError('Пароль должен состоять минимум из 8 символов, включать 1 букву латиницы, цифру и спецсимвол');
+    return next(new InaccurateDataError('Пароль должен состоять минимум из 8 символов, включать 1 букву латиницы, цифру и спецсимвол'));
   }
 
-  User
+  return User
     .findUserByCredentials(email, password)
     .then(({ _id }) => {
-      if (_id) {
-        const token = jwt.sign(
-          { _id },
-          nodeEnv === 'production' ? secretKey : 'dev-secret-key',
-          { expiresIn: '7d' },
-        );
+      const token = jwt.sign(
+        { _id },
+        nodeEnv === 'production' ? secretKey : 'dev-secret-key',
+        { expiresIn: '7d' },
+      );
 
-        return res.send({ token });
-      }
-
-      throw new UnauthorizedError(errorMessages.invalidCredentials);
+      return res.send({ token });
     })
     .catch(next);
 }
@@ -95,10 +90,10 @@ function registerUser(req, res, next) {
   const { email, password, name } = req.body;
 
   if (!PASSWORD_REG.test(password)) {
-    throw new InaccurateDataError('Пароль должен состоять минимум из 8 символов, включать 1 букву латиницы, цифру и спецсимвол');
+    return next(new InaccurateDataError('Пароль должен состоять минимум из 8 символов, включать 1 букву латиницы, цифру и спецсимвол'));
   }
 
-  bcrypt
+  return bcrypt
     .hash(password, 10)
     .then((hash) => User.create({
       email,
